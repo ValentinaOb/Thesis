@@ -1,0 +1,81 @@
+services:
+  node-app:
+    build: ./Node
+    container_name: node
+    environment:
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./pdf_corpus:/mnt/pdf_corpus
+    cpus: 1.0
+    mem_limit: 4g
+
+  python-app:
+    build: ./Python
+    container_name: python
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./pdf_corpus:/mnt/pdf_corpus
+    cpus: 1.0
+    mem_limit: 4g
+
+
+  locust:
+    image: locustio/locust
+    container_name: locust
+
+    ports:
+      - "8089:8089"
+
+    volumes:
+      - ./locust:/mnt/locust
+      - ./pdf_corpus:/mnt/pdf_corpus
+      - ./results:/mnt/results
+
+    command: >
+      sh -c "
+      ls -la /mnt &&
+      ls -la /mnt/pdf_corpus &&
+      locust
+      -f /mnt/locust/$LOCUSTFILE
+      --host=$TARGET_HOST
+      --web-host=0.0.0.0
+      "
+
+    depends_on:
+      - node-app
+      - python-app
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data:

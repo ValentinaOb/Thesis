@@ -1,0 +1,51 @@
+#docker compose up -d
+
+docker compose up --build
+
+docker run -p 8000:8000 file-archiver
+docker run -p 3000:3000 node-zip-app
+locust
+
+# with stats_history
+locust -f locustfile.py --headless -u 500 -r 5 --run-time 2m --host http://localhost:8000 --csv=results --csv-full-history 
+
+
+# creating an image
+docker build -t file-archiver
+
+# container launch
+docker run -p 3000:3000 file-archiver
+
+
+
+docker images
+
+# viewing running containers
+docker ps
+
+# container stop
+docker stop <container_id>
+
+# deleting a container
+docker rm <container_id>
+
+# deleting all containers and images
+docker system prune -a
+
+# viewing logs
+docker logs <container_id>
+
+
+# run locust with prometheus
+locust -f locustfile.py --enable-prometheus --prometheus-exporter-port=9646
+
+# restart prometheus
+docker-compose restart prometheus
+
+
+Dashboard	Grafana ID
+Docker Containers Monitoring - 193
+cAdvisor Exporter - 14282
+Docker Host Overview - 10619
+
+locust - 15512

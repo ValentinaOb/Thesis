@@ -1,0 +1,138 @@
+For PowerShell
+docker compose up --build
+docker compose down
+
+01.2
+- Зібрати метадані:
+systeminfo > metadata.txt
+docker version >> metadata.txt
+
+- Закрити всі зайві процеси:
+Stop-Service -Name "cron"
+Stop-Service -Name "apt-daily"
+
+
+
+1. 
+
+{ Ні, потрібно зпускати run_all !
+run_test.ps1
+- Запуск:
+    powershell -ExecutionPolicy Bypass -File .\run_test.ps1}
+
+    powershell -ExecutionPolicy Bypass -File .\run_all.ps1
+
+
+(
+- Паралельно відкрити:
+    docker stats
+   Якщо: locust > 80% CPU -> результати НЕ валідні
+)
+
+
+powershell -ExecutionPolicy Bypass -File .\run_all.ps1
+
+
+docker compose down -v
+docker compose build --no-cache
+docker compose up -d
+
+
+
+4.
+python analyze.py
+
+5.
+python analyze_plots.py
+
+
+
+
+
+
+(python -m pip install seaborn matplotlib pandas numpy)
+
+
+6.
+(npm install -g clinic)
+(pip install py-spy)
+
+# Щоб працював clinic, заходимо як адміністратор
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Зайту у папку locust
+
+-- Clinic (Node)
+Для C=250
+clinic flame -- node server.js
+
+В іншому PowerShell:
+locust -f locustfile_node.py --headless -u 250 -r 25 --run-time 2m
+
+Після завершення:
+clinic open
+
+{
+Hotspots у: zlib, compression, Buffer, stream.pipeline
+
+Проблема - Ознака
+Event loop lag - довгі вертикальні stack blocks
+libuv thread pool exhaustion - зависання compression tasks
+CPU saturation - 100% одного ядра
+}
+
+- Альтернатива:
+# НЕ у папці locust
+node --prof --no-logfile-per-isolate app.js
+
+node --prof-process v8.log > processed.txt
+
+
+
+-- Pyhon
+# Зайти у папку Pyhon\app
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+
+
+6.2 !!! Зараз НЕ робимо
+Перед использованием источника "msstore" необходимо просмотреть следующие соглашения.
+Для правильной работы источника требуется отправить во внутреннюю службу
+двухбуквенный код текущего региона компьютера (например, "RU").
+winget install k6.k6
+
+
+
+6.3 Endurance Test (60 хв)
+
+{.\run_test.ps1 -FRAMEWORK python -CONCURRENCY 100 -DURATION_MIN 60
+.\run_test.ps1 -FRAMEWORK node -CONCURRENCY 100 -DURATION_MIN 60
+
+python analyze_soak.py
+
+
+run_test_endurance.ps1
+analyze_soak.py}
+
+
+
+
+.\run_all_endurance.ps1
+
+
+python analyze_endurance.py node
+
+
+
+
+Check monitor_metrics file
+.\monitor_metrics.ps1 node results
+
+
+
+
+7 Classic TOPSIS
+
+python classic_topsis.py ` --data results/final_results.csv ` --output results
+
+python visualize_topsis.py ` --data results/final_results.csv ` --output topsis_plots
